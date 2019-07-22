@@ -1,0 +1,1 @@
+A little helper to work with NodeRed in TypeScript.
