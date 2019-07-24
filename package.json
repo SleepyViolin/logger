@@ -1,7 +1,7 @@
 {
   "name": "@sleepyviolin/logger",
-  "version": "1.0.0",
-  "description": "A simple little logger in TypeScript",
+  "version": "1.0.2",
+  "description": "A simple little logger in TypeScript.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

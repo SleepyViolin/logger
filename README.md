@@ -1,0 +1,1 @@
+A simple little logger in TypeScript.
