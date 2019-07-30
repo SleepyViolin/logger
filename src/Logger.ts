@@ -138,7 +138,7 @@ export class Logger {
         this._timeMeasurements.set(givenId, Date.now());
     }
 
-    public static stopTimeMeasurement(givenId: string, givenMessage: string, givenOrigin?: any) {
+    public static stopTimeMeasurement(givenId: string, givenMessage: string = ``, givenOrigin?: any) {
         const measuredTime = Date.now() - this._timeMeasurements.get(givenId);
         Logger.debug(`${givenMessage} -> measured time for Id(${givenId}): ${measuredTime}ms`, givenOrigin);
     }

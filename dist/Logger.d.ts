@@ -51,8 +51,8 @@ export declare class Logger {
     static warn(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;
     static error(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;
     static startTimeMeasurement(givenId: string): void;
-    static stopTimeMeasurement(givenId: string): number;
-    static silentRecord(givenRecordTime?: number): void;
+    static stopTimeMeasurement(givenId: string, givenMessage?: string, givenOrigin?: any): void;
+    static silentRecord(givenPrintAfterRun?: boolean, givenRecordTime?: number): void;
     static startSilentRecord(): void;
     static stopSilentRecord(): void;
     static printSilentRecords(): void;
