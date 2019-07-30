@@ -112,7 +112,6 @@ export class Logger {
 
     public static debug(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions) {
         if (Logger._logLevel & (LogLevel.trace | LogLevel.debug)) {
-            // if (typeof givenMessage === "object") { givenMessage = JSON.stringify(givenMessage, null, 4) }
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.debug, givenOptions);
         }
     }
@@ -139,13 +138,17 @@ export class Logger {
         this._timeMeasurements.set(givenId, Date.now());
     }
 
-    public static stopTimeMeasurement(givenId: string) {
-        return Date.now() - this._timeMeasurements.get(givenId);
+    public static stopTimeMeasurement(givenId: string, givenMessage: string, givenOrigin?: any) {
+        const measuredTime = Date.now() - this._timeMeasurements.get(givenId);
+        Logger.debug(`${givenMessage} -> measured time for Id(${givenId}): ${measuredTime}ms`, givenOrigin);
     }
 
-    public static silentRecord(givenRecordTime: number = 10000) {
+    public static silentRecord(givenPrintAfterRun?: boolean, givenRecordTime: number = 10000) {
         this.startSilentRecord();
-        setTimeout(() => { this.stopSilentRecord(); }, givenRecordTime);
+        setTimeout(() => {
+            this.stopSilentRecord();
+            if (givenPrintAfterRun) { this.printSilentRecords(); }
+        }, givenRecordTime);
     }
 
     public static startSilentRecord() {
