@@ -26,7 +26,7 @@ export enum Color {
     Blink = "\x1b[5m",
     Reverse = "\x1b[7m",
     Hidden = "\x1b[8m",
-    
+
     FgBlack = "\x1b[30m",
     FgRed = "\x1b[31m",
     FgGreen = "\x1b[32m",
@@ -35,7 +35,7 @@ export enum Color {
     FgMagenta = "\x1b[35m",
     FgCyan = "\x1b[36m",
     FgWhite = "\x1b[37m",
-    
+
     BgBlack = "\x1b[40m",
     BgRed = "\x1b[41m",
     BgGreen = "\x1b[42m",
@@ -48,8 +48,8 @@ export enum Color {
 
 export enum LogLevel {
     trace = 1 << 1,
-    todo = 1 << 2,
-    debug = 1 << 3,
+    debug = 1 << 2,
+    todo = 1 << 3,
     info = 1 << 4,
     warn = 1 << 5,
     error = 1 << 6,
@@ -147,14 +147,14 @@ export class Logger {
         const hours = Math.floor(givenTime / 1000 / 60 / 24) % 24;
         const days = Math.floor(givenTime / 1000 / 60 / 60 / 24 / 365) % 365;
         const years = Math.floor(givenTime / 1000 / 60 / 60 / 24 / 365);
-    
+
         let humanReadableTime = years ? years + `y ` : ``;
         humanReadableTime = days ? days + `d ` : ``;
         humanReadableTime += hours ? hours + `h ` : ``;
         humanReadableTime += minutes ? minutes + `m ` : ``;
         humanReadableTime += seconds ? seconds + `s ` : ``;
         humanReadableTime += milliSeconds ? milliSeconds + `ms` : ``;
-    
+
         return humanReadableTime;
     }
 
@@ -172,32 +172,32 @@ export class Logger {
         }
     }
 
-    public static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.todo)) {
-            Logger.logMessage(givenMessage, givenOrigin, LogLevel.todo, givenOptions);
-        }
-    }
-
     public static debug(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions) {
         if (Logger._logLevel & (LogLevel.trace | LogLevel.debug)) {
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.debug, givenOptions);
         }
     }
 
+    public static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo)) {
+            Logger.logMessage(givenMessage, givenOrigin, LogLevel.todo, givenOptions);
+        }
+    }
+
     public static info(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.info)) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info)) {
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.info, givenOptions);
         }
     }
 
     public static warn(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.info | LogLevel.warn)) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn)) {
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.warn, givenOptions);
         }
     }
 
     public static error(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.info | LogLevel.warn | LogLevel.error)) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn | LogLevel.error)) {
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.error, givenOptions);
         }
     }
@@ -245,7 +245,7 @@ export class Logger {
                 logLevelString = `[Trace]  `;
                 break;
             case LogLevel.todo:
-                logLevelString = `[TODO]   `;
+                logLevelString = `[${Logger.colorfull(Logger.colorfull(`TODO`, Color.BgCyan), Color.FgBlack)}]   `;
                 break;
             case LogLevel.debug:
                 logLevelString = `[Debug]  `;
@@ -254,10 +254,10 @@ export class Logger {
                 logLevelString = `[Info]   `;
                 break;
             case LogLevel.warn:
-                logLevelString = `[Warning]`;
+                logLevelString = `[${this.colorfull(`Warning`, Color.FgYellow)}]`;
                 break;
             case LogLevel.error:
-                logLevelString = `[Error]  `;
+                logLevelString = `[${Logger.colorfull(Logger.colorfull(`Error`, Color.BgRed), Color.FgBlack)}]  `;
                 break;
             default:
                 logLevelString = `[WTF]    `;
