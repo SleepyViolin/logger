@@ -18,6 +18,34 @@ import * as NodeRed from "@sleepyviolin/nodered-types";
 
 // ++++++++++++++++++++++++++++++ Types ++++++++++++++++++++++++++++++
 
+export enum Color {
+    Reset = "\x1b[0m",
+    Bright = "\x1b[1m",
+    Dim = "\x1b[2m",
+    Underscore = "\x1b[4m",
+    Blink = "\x1b[5m",
+    Reverse = "\x1b[7m",
+    Hidden = "\x1b[8m",
+    
+    FgBlack = "\x1b[30m",
+    FgRed = "\x1b[31m",
+    FgGreen = "\x1b[32m",
+    FgYellow = "\x1b[33m",
+    FgBlue = "\x1b[34m",
+    FgMagenta = "\x1b[35m",
+    FgCyan = "\x1b[36m",
+    FgWhite = "\x1b[37m",
+    
+    BgBlack = "\x1b[40m",
+    BgRed = "\x1b[41m",
+    BgGreen = "\x1b[42m",
+    BgYellow = "\x1b[43m",
+    BgBlue = "\x1b[44m",
+    BgMagenta = "\x1b[45m",
+    BgCyan = "\x1b[46m",
+    BgWhite = "\x1b[47m",
+}
+
 export enum LogLevel {
     trace = 1 << 1,
     todo = 1 << 2,
@@ -89,6 +117,46 @@ export class Logger {
     // *** Static Functions ***
 
     // *** Public ***
+
+    public static colorfull(givenString: string, givenColor: Color): string {
+        return `${givenColor}${givenString}${Color.Reset}`;
+    }
+
+    public static colorfullBoolean(givenBoolean: boolean): string {
+        const booleanString = `${givenBoolean}`;
+        if (givenBoolean) {
+            return `${this.colorfull(booleanString, Color.FgGreen)}`;
+        } else {
+            return `${this.colorfull(booleanString, Color.FgRed)}`;
+        }
+    }
+
+    public static colorfullRange(givenNumber: number, givenRange: number[]): string {
+        const numberString = `${givenNumber}`;
+        if (Array.from(givenRange.keys()).includes(givenNumber)) {
+            return `${this.colorfull(numberString, Color.FgGreen)}`;
+        } else {
+            return `${this.colorfull(numberString, Color.FgRed)}`;
+        }
+    }
+
+    public static toHumanReadableTime(givenTime: number): string {
+        const milliSeconds = givenTime % 1000;
+        const seconds = Math.floor(givenTime / 1000) % 60;
+        const minutes = Math.floor(givenTime / 1000 / 60) % 60;
+        const hours = Math.floor(givenTime / 1000 / 60 / 24) % 24;
+        const days = Math.floor(givenTime / 1000 / 60 / 60 / 24 / 365) % 365;
+        const years = Math.floor(givenTime / 1000 / 60 / 60 / 24 / 365);
+    
+        let humanReadableTime = years ? years + `y ` : ``;
+        humanReadableTime = days ? days + `d ` : ``;
+        humanReadableTime += hours ? hours + `h ` : ``;
+        humanReadableTime += minutes ? minutes + `m ` : ``;
+        humanReadableTime += seconds ? seconds + `s ` : ``;
+        humanReadableTime += milliSeconds ? milliSeconds + `ms` : ``;
+    
+        return humanReadableTime;
+    }
 
     public static setNodeRedPort(givenRedNode: NodeRed.Node) {
         Logger._ports.set(`NodeRed`, givenRedNode);
