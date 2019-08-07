@@ -41,8 +41,8 @@ export declare enum Color {
 }
 export declare enum LogLevel {
     trace = 2,
-    todo = 4,
-    debug = 8,
+    debug = 4,
+    todo = 8,
     info = 16,
     warn = 32,
     error = 64
@@ -74,8 +74,8 @@ export declare class Logger {
     static setNodeRedPort(givenRedNode: NodeRed.Node): void;
     static setLogLevel(givenLogLevel: LogLevel): void;
     static trace(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;
-    static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions): void;
     static debug(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions): void;
+    static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions): void;
     static info(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;
     static warn(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;
     static error(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;

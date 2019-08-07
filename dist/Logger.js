@@ -45,8 +45,8 @@ var Color;
 var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["trace"] = 2] = "trace";
-    LogLevel[LogLevel["todo"] = 4] = "todo";
-    LogLevel[LogLevel["debug"] = 8] = "debug";
+    LogLevel[LogLevel["debug"] = 4] = "debug";
+    LogLevel[LogLevel["todo"] = 8] = "todo";
     LogLevel[LogLevel["info"] = 16] = "info";
     LogLevel[LogLevel["warn"] = 32] = "warn";
     LogLevel[LogLevel["error"] = 64] = "error";
@@ -118,28 +118,28 @@ class Logger {
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.trace, givenOptions);
         }
     }
-    static todo(givenMessage, givenOrigin, givenOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.todo)) {
-            Logger.logMessage(givenMessage, givenOrigin, LogLevel.todo, givenOptions);
-        }
-    }
     static debug(givenMessage, givenOrigin, givenOptions) {
         if (Logger._logLevel & (LogLevel.trace | LogLevel.debug)) {
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.debug, givenOptions);
         }
     }
+    static todo(givenMessage, givenOrigin, givenOptions) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo)) {
+            Logger.logMessage(givenMessage, givenOrigin, LogLevel.todo, givenOptions);
+        }
+    }
     static info(givenMessage, givenOrigin, givenOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.info)) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info)) {
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.info, givenOptions);
         }
     }
     static warn(givenMessage, givenOrigin, givenOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.info | LogLevel.warn)) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn)) {
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.warn, givenOptions);
         }
     }
     static error(givenMessage, givenOrigin, givenOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.info | LogLevel.warn | LogLevel.error)) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn | LogLevel.error)) {
             Logger.logMessage(givenMessage, givenOrigin, LogLevel.error, givenOptions);
         }
     }
@@ -180,7 +180,7 @@ class Logger {
                 logLevelString = `[Trace]  `;
                 break;
             case LogLevel.todo:
-                logLevelString = `[TODO]   `;
+                logLevelString = `[${Logger.colorfull(Logger.colorfull(`TODO`, Color.BgCyan), Color.FgBlack)}]   `;
                 break;
             case LogLevel.debug:
                 logLevelString = `[Debug]  `;
@@ -189,10 +189,10 @@ class Logger {
                 logLevelString = `[Info]   `;
                 break;
             case LogLevel.warn:
-                logLevelString = `[Warning]`;
+                logLevelString = `[${this.colorfull(`Warning`, Color.FgYellow)}]`;
                 break;
             case LogLevel.error:
-                logLevelString = `[Error]  `;
+                logLevelString = `[${Logger.colorfull(Logger.colorfull(`Error`, Color.BgRed), Color.FgBlack)}]  `;
                 break;
             default:
                 logLevelString = `[WTF]    `;
