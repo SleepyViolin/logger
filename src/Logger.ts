@@ -149,7 +149,7 @@ export class Logger {
         const years = Math.floor(givenTime / 1000 / 60 / 60 / 24 / 365);
 
         let humanReadableTime = years ? years + `y ` : ``;
-        humanReadableTime = days ? days + `d ` : ``;
+        humanReadableTime += days ? days + `d ` : ``;
         humanReadableTime += hours ? hours + `h ` : ``;
         humanReadableTime += minutes ? minutes + `m ` : ``;
         humanReadableTime += seconds ? seconds + `s ` : ``;
