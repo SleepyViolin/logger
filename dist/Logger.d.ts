@@ -60,6 +60,12 @@ export interface LoggerOptions {
     sendToPort?: string;
 }
 export declare class Logger {
+    readonly trace: (...data: any[]) => void;
+    readonly debug: (...data: any[]) => void;
+    readonly todo: (...data: any[]) => void;
+    readonly info: (...data: any[]) => void;
+    readonly warn: (...data: any[]) => void;
+    readonly error: (...data: any[]) => void;
     private static _logLevel;
     private static _isSilent;
     private static _silentLogs;

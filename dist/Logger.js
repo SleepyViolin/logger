@@ -100,7 +100,7 @@ class Logger {
         const days = Math.floor(givenTime / 1000 / 60 / 60 / 24 / 365) % 365;
         const years = Math.floor(givenTime / 1000 / 60 / 60 / 24 / 365);
         let humanReadableTime = years ? years + `y ` : ``;
-        humanReadableTime = days ? days + `d ` : ``;
+        humanReadableTime += days ? days + `d ` : ``;
         humanReadableTime += hours ? hours + `h ` : ``;
         humanReadableTime += minutes ? minutes + `m ` : ``;
         humanReadableTime += seconds ? seconds + `s ` : ``;
@@ -183,13 +183,13 @@ class Logger {
                 logLevelString = `[${Logger.colorfull(Logger.colorfull(`TODO`, Color.BgCyan), Color.FgBlack)}]   `;
                 break;
             case LogLevel.debug:
-                logLevelString = `[Debug]  `;
+                logLevelString = `[${Logger.colorfull(`Debug`, Color.FgYellow)}]  `;
                 break;
             case LogLevel.info:
                 logLevelString = `[Info]   `;
                 break;
             case LogLevel.warn:
-                logLevelString = `[${this.colorfull(`Warning`, Color.FgYellow)}]`;
+                logLevelString = `[${Logger.colorfull(Logger.colorfull(`Warning`, Color.BgYellow), Color.FgBlack)}]`;
                 break;
             case LogLevel.error:
                 logLevelString = `[${Logger.colorfull(Logger.colorfull(`Error`, Color.BgRed), Color.FgBlack)}]  `;
@@ -202,7 +202,7 @@ class Logger {
     static getOriginName(givenOrigin) {
         let originName = ``;
         if (givenOrigin) {
-            originName = (givenOrigin.constructor.name === `Function`) ? `${givenOrigin.name}:` : `${givenOrigin.constructor.name}:`;
+            originName = (givenOrigin.constructor.name === `Function`) ? `${givenOrigin.name}:` : `${givenOrigin.constructor.name}${givenOrigin.id ? `[${Logger.colorfull(`${givenOrigin.id}`, Color.FgCyan)}]` : ``}:`;
         }
         return originName;
     }
@@ -267,12 +267,16 @@ class Logger {
         }
     }
     static logWithPrefix(givenMessage, givenMessagePrefix) {
+        Logger.trace = console.log.bind(console, givenMessagePrefix);
+        Logger.debug = console.log.bind(console, givenMessagePrefix);
+        Logger.todo = console.log.bind(console, givenMessagePrefix);
+        Logger.info = console.log.bind(console, givenMessagePrefix);
+        Logger.warn = console.log.bind(console, givenMessagePrefix);
+        Logger.error = console.log.bind(console, givenMessagePrefix);
         const prefixedLogger = console.log.bind(console, givenMessagePrefix);
         prefixedLogger(givenMessage);
     }
 }
-// ************************************************************************
-// *** Propertys ***
 // private static _instance: Logger;
 Logger._logLevel = LogLevel.trace;
 Logger._isSilent = false;

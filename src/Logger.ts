@@ -75,6 +75,13 @@ export class Logger {
     // ************************************************************************
     // *** Propertys ***
 
+    public readonly trace: (...data: any[]) => void;
+    public readonly debug: (...data: any[]) => void;
+    public readonly todo: (...data: any[]) => void;
+    public readonly info: (...data: any[]) => void;
+    public readonly warn: (...data: any[]) => void;
+    public readonly error: (...data: any[]) => void;
+
     // private static _instance: Logger;
     private static _logLevel: number = LogLevel.trace;
     private static _isSilent: boolean = false;
@@ -248,13 +255,14 @@ export class Logger {
                 logLevelString = `[${Logger.colorfull(Logger.colorfull(`TODO`, Color.BgCyan), Color.FgBlack)}]   `;
                 break;
             case LogLevel.debug:
-                logLevelString = `[Debug]  `;
+                logLevelString = `[${Logger.colorfull(`Debug`, Color.FgYellow)}]  `;
                 break;
             case LogLevel.info:
                 logLevelString = `[Info]   `;
                 break;
             case LogLevel.warn:
-                logLevelString = `[${this.colorfull(`Warning`, Color.FgYellow)}]`;
+                logLevelString = `[${Logger.colorfull(Logger.colorfull(`Warning`, Color.BgYellow), Color.FgBlack)}]`;
+
                 break;
             case LogLevel.error:
                 logLevelString = `[${Logger.colorfull(Logger.colorfull(`Error`, Color.BgRed), Color.FgBlack)}]  `;
@@ -268,7 +276,8 @@ export class Logger {
     private static getOriginName(givenOrigin: any): string {
         let originName = ``;
         if (givenOrigin) {
-            originName = (givenOrigin.constructor.name === `Function`) ? `${givenOrigin.name}:` : `${givenOrigin.constructor.name}:`;
+            originName = (givenOrigin.constructor.name === `Function`) ? `${givenOrigin.name}:` : `${givenOrigin.constructor.name}${givenOrigin.id ? `[${Logger.colorfull(`${givenOrigin.id}`, Color.FgCyan)}]` : ``}:`;
+
         }
         return originName;
     }
@@ -338,6 +347,13 @@ export class Logger {
     }
 
     private static logWithPrefix(givenMessage: string, givenMessagePrefix: string) {
+        Logger.trace = console.log.bind(console, givenMessagePrefix);
+        Logger.debug = console.log.bind(console, givenMessagePrefix);
+        Logger.todo = console.log.bind(console, givenMessagePrefix);
+        Logger.info = console.log.bind(console, givenMessagePrefix);
+        Logger.warn = console.log.bind(console, givenMessagePrefix);
+        Logger.error = console.log.bind(console, givenMessagePrefix);
+
         const prefixedLogger = console.log.bind(console, givenMessagePrefix);
         prefixedLogger(givenMessage);
     }
