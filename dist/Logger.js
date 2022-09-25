@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Logger = exports.LogLevel = exports.Color = void 0;
 // ++++++++++++++++++++++++++++++ Types ++++++++++++++++++++++++++++++
 var Color;
 (function (Color) {
@@ -273,6 +274,7 @@ class Logger {
         return console.log.bind(console, givenMessagePrefix, givenMessage, ...args);
     }
 }
+exports.Logger = Logger;
 // ************************************************************************
 // *** Propertys ***
 // *** Public ***
@@ -294,4 +296,3 @@ Logger._optionsStandartValues = {
     silent: false,
     sendToPort: `Console`
 };
-exports.Logger = Logger;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as NodeRed from "@sleepyviolin/nodered-types";
+import * as NodeRed from "node-red";
 export declare enum Color {
     Reset = "\u001B[0m",
     Bright = "\u001B[1m",
