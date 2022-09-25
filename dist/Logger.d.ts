@@ -60,12 +60,6 @@ export interface LoggerOptions {
     sendToPort?: string;
 }
 export declare class Logger {
-    readonly trace: (...data: any[]) => void;
-    readonly debug: (...data: any[]) => void;
-    readonly todo: (...data: any[]) => void;
-    readonly info: (...data: any[]) => void;
-    readonly warn: (...data: any[]) => void;
-    readonly error: (...data: any[]) => void;
     private static _logLevel;
     private static _isSilent;
     private static _silentLogs;
@@ -73,18 +67,19 @@ export declare class Logger {
     private static _ports;
     private static _optionsStandartValues;
     private constructor();
+    static trace(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]): any;
+    static debug(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions, ...args: any[]): any;
+    static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions, ...args: any[]): any;
+    static info(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]): any;
+    static warn(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]): any;
+    static error(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]): any;
     static colorfull(givenString: string, givenColor: Color): string;
     static colorfullBoolean(givenBoolean: boolean): string;
     static colorfullRange(givenNumber: number, givenRange: number[]): string;
     static toHumanReadableTime(givenTime: number): string;
     static setNodeRedPort(givenRedNode: NodeRed.Node): void;
     static setLogLevel(givenLogLevel: LogLevel): void;
-    static trace(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;
-    static debug(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions): void;
-    static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions): void;
-    static info(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;
-    static warn(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;
-    static error(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions): void;
+    static test(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]): void;
     static startTimeMeasurement(givenId: string): void;
     static stopTimeMeasurement(givenId: string, givenMessage?: string, givenOrigin?: any): void;
     static silentRecord(givenPrintAfterRun?: boolean, givenRecordTime?: number): void;

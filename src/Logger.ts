@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as NodeRed from "@sleepyviolin/nodered-types";
+import * as NodeRed from "node-red";
 
 // ++++++++++++++++++++++++++++++ Types ++++++++++++++++++++++++++++++
 
@@ -75,14 +75,10 @@ export class Logger {
     // ************************************************************************
     // *** Propertys ***
 
-    public readonly trace: (...data: any[]) => void;
-    public readonly debug: (...data: any[]) => void;
-    public readonly todo: (...data: any[]) => void;
-    public readonly info: (...data: any[]) => void;
-    public readonly warn: (...data: any[]) => void;
-    public readonly error: (...data: any[]) => void;
+    // *** Public ***
 
-    // private static _instance: Logger;
+    // *** Private ***
+
     private static _logLevel: number = LogLevel.trace;
     private static _isSilent: boolean = false;
     private static _silentLogs: string[][] = [];
@@ -111,19 +107,46 @@ export class Logger {
         // do something construct...
     }
 
-    /*
-    static getInstance(): Logger {
-        if (!Logger._instance) {
-            Logger._instance = new Logger()
-        }
-        return Logger._instance;
-    }
-    */
-
     // ************************************************************************
     // *** Static Functions ***
 
     // *** Public ***
+
+    public static trace(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args:any[]) {
+        if (Logger._logLevel & LogLevel.trace) {
+            return this.logMessage(givenMessage, givenOrigin, LogLevel.trace, givenOptions, ...args);
+        }
+    }
+
+    public static debug(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions, ...args:any[]) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug)) {
+            return this.logMessage(givenMessage, givenOrigin, LogLevel.debug, givenOptions, ...args);
+        }
+    }
+
+    public static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions, ...args:any[]) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo)) {
+            return this.logMessage(givenMessage, givenOrigin, LogLevel.todo, givenOptions, ...args);
+        }
+    }
+
+    public static info(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args:any[]) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info)) {
+            return this.logMessage(givenMessage, givenOrigin, LogLevel.info, givenOptions, ...args);
+        }
+    }
+
+    public static warn(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args:any[]) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn)) {
+            return this.logMessage(givenMessage, givenOrigin, LogLevel.warn, givenOptions, ...args);
+        }
+    }
+
+    public static error(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args:any[]) {
+        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn | LogLevel.error)) {
+            return this.logMessage(givenMessage, givenOrigin, LogLevel.error, givenOptions, ...args);
+        }
+    }
 
     public static colorfull(givenString: string, givenColor: Color): string {
         return `${givenColor}${givenString}${Color.Reset}`;
@@ -173,39 +196,9 @@ export class Logger {
         Logger._logLevel = givenLogLevel;
     }
 
-    public static trace(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions) {
+    public static test(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]) {
         if (Logger._logLevel & LogLevel.trace) {
-            Logger.logMessage(givenMessage, givenOrigin, LogLevel.trace, givenOptions);
-        }
-    }
-
-    public static debug(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug)) {
-            Logger.logMessage(givenMessage, givenOrigin, LogLevel.debug, givenOptions);
-        }
-    }
-
-    public static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo)) {
-            Logger.logMessage(givenMessage, givenOrigin, LogLevel.todo, givenOptions);
-        }
-    }
-
-    public static info(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info)) {
-            Logger.logMessage(givenMessage, givenOrigin, LogLevel.info, givenOptions);
-        }
-    }
-
-    public static warn(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn)) {
-            Logger.logMessage(givenMessage, givenOrigin, LogLevel.warn, givenOptions);
-        }
-    }
-
-    public static error(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions) {
-        if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn | LogLevel.error)) {
-            Logger.logMessage(givenMessage, givenOrigin, LogLevel.error, givenOptions);
+            Logger.logMessage(givenMessage, givenOrigin, LogLevel.trace, givenOptions, ...args);
         }
     }
 
@@ -232,12 +225,12 @@ export class Logger {
 
     public static stopSilentRecord() {
         this._isSilent = false;
-        this._silentLogs.forEach((logMessage) => Logger.logWithPrefix(logMessage[0], logMessage[1]));
+        this._silentLogs.forEach((logMessage) => Logger.logWithPrefix(logMessage[0], logMessage[1])());
         this._silentLogs = new Array();
     }
 
     public static printSilentRecords() {
-        this._silentLogs.forEach((logMessage) => Logger.logWithPrefix(logMessage[0], logMessage[1]));
+        this._silentLogs.forEach((logMessage) => Logger.logWithPrefix(logMessage[0], logMessage[1])());
         this._silentLogs = new Array();
     }
 
@@ -246,7 +239,7 @@ export class Logger {
     // *** Private ***
 
     private static logLevelToString(givenLogLevel: LogLevel): string {
-        let logLevelString;
+        let logLevelString: string;
         switch (givenLogLevel) {
             case LogLevel.trace:
                 logLevelString = `[Trace]  `;
@@ -276,8 +269,12 @@ export class Logger {
     private static getOriginName(givenOrigin: any): string {
         let originName = ``;
         if (givenOrigin) {
-            originName = (givenOrigin.constructor.name === `Function`) ? `${givenOrigin.name}:` : `${givenOrigin.constructor.name}${givenOrigin.id ? `[${Logger.colorfull(`${givenOrigin.id}`, Color.FgCyan)}]` : ``}:`;
-
+            if (givenOrigin.constructor.name === `Function`) {
+                originName += givenOrigin.name;
+            } else {
+                originName += givenOrigin.constructor.name;
+            }
+            originName += `[${Logger.colorfull(`${givenOrigin.id || `Class`}`, Color.FgCyan)}]`;
         }
         return originName;
     }
@@ -333,7 +330,7 @@ export class Logger {
         return message;
     }
 
-    private static logMessage(givenMessage: string, givenOrigin: any, givenLogLevel: LogLevel, givenOptions: LoggerOptions) {
+    private static logMessage(givenMessage: string, givenOrigin: any, givenLogLevel: LogLevel, givenOptions: LoggerOptions, ...args: any[]) {
         const nodeRedPort = Logger._ports.get(`NodeRed`);
         const messagePrefix = Logger.generateMessagePrefix(givenOrigin, givenLogLevel);
         if (this._isSilent || (givenOptions && givenOptions.silent)) {
@@ -342,19 +339,11 @@ export class Logger {
             nodeRedPort.log({ message: givenMessage, origin: givenOrigin });
         } else {
             const message = Logger.generateMessage(givenMessage, givenOrigin, givenOptions);
-            Logger.logWithPrefix(message, messagePrefix);
+            return Logger.logWithPrefix(message, messagePrefix, ...args);
         }
     }
 
-    private static logWithPrefix(givenMessage: string, givenMessagePrefix: string) {
-        Logger.trace = console.log.bind(console, givenMessagePrefix);
-        Logger.debug = console.log.bind(console, givenMessagePrefix);
-        Logger.todo = console.log.bind(console, givenMessagePrefix);
-        Logger.info = console.log.bind(console, givenMessagePrefix);
-        Logger.warn = console.log.bind(console, givenMessagePrefix);
-        Logger.error = console.log.bind(console, givenMessagePrefix);
-
-        const prefixedLogger = console.log.bind(console, givenMessagePrefix);
-        prefixedLogger(givenMessage);
+    private static logWithPrefix(givenMessage: string, givenMessagePrefix: string, ...args: any[]) {
+        return console.log.bind(console, givenMessagePrefix, givenMessage, ...args);
     }
 }

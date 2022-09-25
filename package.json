@@ -1,6 +1,6 @@
 {
   "name": "@sleepyviolin/logger",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A simple little logger in TypeScript.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,6 +23,7 @@
   "devDependencies": {
     "@sleepyviolin/nodered-types": "^1.0.1",
     "@types/node": "^12.6.8",
+    "@types/node-red": "^1.2.1",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
   },
