@@ -15,36 +15,9 @@
  */
 
 import * as NodeRed from "node-red";
+import { Color } from "./Color";
 
 // ++++++++++++++++++++++++++++++ Types ++++++++++++++++++++++++++++++
-
-export enum Color {
-    Reset = "\x1b[0m",
-    Bright = "\x1b[1m",
-    Dim = "\x1b[2m",
-    Underscore = "\x1b[4m",
-    Blink = "\x1b[5m",
-    Reverse = "\x1b[7m",
-    Hidden = "\x1b[8m",
-
-    FgBlack = "\x1b[30m",
-    FgRed = "\x1b[31m",
-    FgGreen = "\x1b[32m",
-    FgYellow = "\x1b[33m",
-    FgBlue = "\x1b[34m",
-    FgMagenta = "\x1b[35m",
-    FgCyan = "\x1b[36m",
-    FgWhite = "\x1b[37m",
-
-    BgBlack = "\x1b[40m",
-    BgRed = "\x1b[41m",
-    BgGreen = "\x1b[42m",
-    BgYellow = "\x1b[43m",
-    BgBlue = "\x1b[44m",
-    BgMagenta = "\x1b[45m",
-    BgCyan = "\x1b[46m",
-    BgWhite = "\x1b[47m",
-}
 
 export enum LogLevel {
     trace = 1 << 1,
@@ -68,10 +41,9 @@ export interface LoggerOptions {
     sendToPort?: string; // TODO
 }
 
-// ++++++++++++++++++++++++++++++ Class Logger ++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++ Class ++++++++++++++++++++++++++++++
 
 export class Logger {
-
     // ************************************************************************
     // *** Propertys ***
 
@@ -94,7 +66,7 @@ export class Logger {
         emptyMessagePlaceholder: `End`,
         spacer: ` `,
         silent: false,
-        sendToPort: `Console`
+        sendToPort: `Console`,
     };
 
     // ************************************************************************
@@ -112,61 +84,39 @@ export class Logger {
 
     // *** Public ***
 
-    public static trace(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args:any[]) {
+    public static trace(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]) {
         if (Logger._logLevel & LogLevel.trace) {
             return this.logMessage(givenMessage, givenOrigin, LogLevel.trace, givenOptions, ...args);
         }
     }
 
-    public static debug(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions, ...args:any[]) {
+    public static debug(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions, ...args: any[]) {
         if (Logger._logLevel & (LogLevel.trace | LogLevel.debug)) {
             return this.logMessage(givenMessage, givenOrigin, LogLevel.debug, givenOptions, ...args);
         }
     }
 
-    public static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions, ...args:any[]) {
+    public static todo(givenMessage: any, givenOrigin?: any, givenOptions?: LoggerOptions, ...args: any[]) {
         if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo)) {
             return this.logMessage(givenMessage, givenOrigin, LogLevel.todo, givenOptions, ...args);
         }
     }
 
-    public static info(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args:any[]) {
+    public static info(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]) {
         if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info)) {
             return this.logMessage(givenMessage, givenOrigin, LogLevel.info, givenOptions, ...args);
         }
     }
 
-    public static warn(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args:any[]) {
+    public static warn(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]) {
         if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn)) {
             return this.logMessage(givenMessage, givenOrigin, LogLevel.warn, givenOptions, ...args);
         }
     }
 
-    public static error(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args:any[]) {
+    public static error(givenMessage: any, givenOrigin: any, givenOptions?: LoggerOptions, ...args: any[]) {
         if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn | LogLevel.error)) {
             return this.logMessage(givenMessage, givenOrigin, LogLevel.error, givenOptions, ...args);
-        }
-    }
-
-    public static colorfull(givenString: string, givenColor: Color): string {
-        return `${givenColor}${givenString}${Color.Reset}`;
-    }
-
-    public static colorfullBoolean(givenBoolean: boolean): string {
-        const booleanString = `${givenBoolean}`;
-        if (givenBoolean) {
-            return `${this.colorfull(booleanString, Color.FgGreen)}`;
-        } else {
-            return `${this.colorfull(booleanString, Color.FgRed)}`;
-        }
-    }
-
-    public static colorfullRange(givenNumber: number, givenRange: number[]): string {
-        const numberString = `${givenNumber}`;
-        if (Array.from(givenRange.keys()).includes(givenNumber)) {
-            return `${this.colorfull(numberString, Color.FgGreen)}`;
-        } else {
-            return `${this.colorfull(numberString, Color.FgRed)}`;
         }
     }
 
@@ -215,7 +165,9 @@ export class Logger {
         this.startSilentRecord();
         setTimeout(() => {
             this.stopSilentRecord();
-            if (givenPrintAfterRun) { this.printSilentRecords(); }
+            if (givenPrintAfterRun) {
+                this.printSilentRecords();
+            }
         }, givenRecordTime);
     }
 
@@ -245,20 +197,20 @@ export class Logger {
                 logLevelString = `[Trace]  `;
                 break;
             case LogLevel.todo:
-                logLevelString = `[${Logger.colorfull(Logger.colorfull(`TODO`, Color.BgCyan), Color.FgBlack)}]   `;
+                logLevelString = `[${Color.black(Color.bgCyan(`TODO`))}]   `;
                 break;
             case LogLevel.debug:
-                logLevelString = `[${Logger.colorfull(`Debug`, Color.FgYellow)}]  `;
+                logLevelString = `[${Color.yellow(`Debug`)}]  `;
                 break;
             case LogLevel.info:
                 logLevelString = `[Info]   `;
                 break;
             case LogLevel.warn:
-                logLevelString = `[${Logger.colorfull(Logger.colorfull(`Warning`, Color.BgYellow), Color.FgBlack)}]`;
+                logLevelString = `[${Color.black(Color.bgYellow(`Warning`))}]`;
 
                 break;
             case LogLevel.error:
-                logLevelString = `[${Logger.colorfull(Logger.colorfull(`Error`, Color.BgRed), Color.FgBlack)}]  `;
+                logLevelString = `[${Color.black(Color.bgRed(`Error`))}]  `;
                 break;
             default:
                 logLevelString = `[WTF]    `;
@@ -274,14 +226,14 @@ export class Logger {
             } else {
                 originName += givenOrigin.constructor.name;
             }
-            originName += `[${Logger.colorfull(`${givenOrigin.id || `Class`}`, Color.FgCyan)}]`;
+            originName += `[${Color.cyan(`${givenOrigin.id || `Class`}`)}]`;
         }
         return originName;
     }
 
     private static generateTimestamp(): string {
         const date = new Date();
-        date.setUTCHours(date.getUTCHours() + ((date.getTimezoneOffset() / 60) * -1));
+        date.setUTCHours(date.getUTCHours() + (date.getTimezoneOffset() / 60) * -1);
         const utcTimestamp = date.toUTCString();
         const formattedTimestamp = `${utcTimestamp.slice(5, 11)}${utcTimestamp.slice(16, 25)}`;
         return formattedTimestamp;
@@ -299,13 +251,14 @@ export class Logger {
         let message = givenMessage || options.emptyMessagePlaceholder;
         message = options.spacer + message + options.spacer;
 
-        const dynamicDottedLength = options.dottedLength - (Logger.getOriginName(givenOrigin)).length - message.length;
-        const leftPatternCount = Math.floor((dynamicDottedLength / 2) / (options.severalPattern ? options.dotPatternLeft.length : options.dotPattern.length));
-        const rigthPatternCount = Math.floor((dynamicDottedLength / 2) / (options.severalPattern ? options.dotPatternRight.length : options.dotPattern.length));
-        const dottedMessageLenth = (leftPatternCount * (options.severalPattern ? options.dotPatternLeft.length : options.dotPattern.length))
-            + message.length
-            + (rigthPatternCount * (options.severalPattern ? options.dotPatternRight.length : options.dotPattern.length));
-        const realLength = dottedMessageLenth + (Logger.getOriginName(givenOrigin)).length;
+        const dynamicDottedLength = options.dottedLength - Logger.getOriginName(givenOrigin).length - message.length;
+        const leftPatternCount = Math.floor(dynamicDottedLength / 2 / (options.severalPattern ? options.dotPatternLeft.length : options.dotPattern.length));
+        const rigthPatternCount = Math.floor(dynamicDottedLength / 2 / (options.severalPattern ? options.dotPatternRight.length : options.dotPattern.length));
+        const dottedMessageLenth =
+            leftPatternCount * (options.severalPattern ? options.dotPatternLeft.length : options.dotPattern.length) +
+            message.length +
+            rigthPatternCount * (options.severalPattern ? options.dotPatternRight.length : options.dotPattern.length);
+        const realLength = dottedMessageLenth + Logger.getOriginName(givenOrigin).length;
         const offsetLength = options.dottedLength - realLength;
 
         let leftPattern = ``;

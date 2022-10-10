@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 
- export * from "./Logger";
+export * from "./Color";
+export * from "./Logger";
