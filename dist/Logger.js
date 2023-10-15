@@ -15,34 +15,9 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Logger = exports.LogLevel = exports.Color = void 0;
+exports.Logger = exports.LogLevel = void 0;
+const Color_1 = require("./Color");
 // ++++++++++++++++++++++++++++++ Types ++++++++++++++++++++++++++++++
-var Color;
-(function (Color) {
-    Color["Reset"] = "\u001B[0m";
-    Color["Bright"] = "\u001B[1m";
-    Color["Dim"] = "\u001B[2m";
-    Color["Underscore"] = "\u001B[4m";
-    Color["Blink"] = "\u001B[5m";
-    Color["Reverse"] = "\u001B[7m";
-    Color["Hidden"] = "\u001B[8m";
-    Color["FgBlack"] = "\u001B[30m";
-    Color["FgRed"] = "\u001B[31m";
-    Color["FgGreen"] = "\u001B[32m";
-    Color["FgYellow"] = "\u001B[33m";
-    Color["FgBlue"] = "\u001B[34m";
-    Color["FgMagenta"] = "\u001B[35m";
-    Color["FgCyan"] = "\u001B[36m";
-    Color["FgWhite"] = "\u001B[37m";
-    Color["BgBlack"] = "\u001B[40m";
-    Color["BgRed"] = "\u001B[41m";
-    Color["BgGreen"] = "\u001B[42m";
-    Color["BgYellow"] = "\u001B[43m";
-    Color["BgBlue"] = "\u001B[44m";
-    Color["BgMagenta"] = "\u001B[45m";
-    Color["BgCyan"] = "\u001B[46m";
-    Color["BgWhite"] = "\u001B[47m";
-})(Color = exports.Color || (exports.Color = {}));
 var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["trace"] = 2] = "trace";
@@ -52,7 +27,7 @@ var LogLevel;
     LogLevel[LogLevel["warn"] = 32] = "warn";
     LogLevel[LogLevel["error"] = 64] = "error";
 })(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
-// ++++++++++++++++++++++++++++++ Class Logger ++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++ Class ++++++++++++++++++++++++++++++
 class Logger {
     // ************************************************************************
     // *** Getter / Setter ***
@@ -92,27 +67,6 @@ class Logger {
     static error(givenMessage, givenOrigin, givenOptions, ...args) {
         if (Logger._logLevel & (LogLevel.trace | LogLevel.debug | LogLevel.todo | LogLevel.info | LogLevel.warn | LogLevel.error)) {
             return this.logMessage(givenMessage, givenOrigin, LogLevel.error, givenOptions, ...args);
-        }
-    }
-    static colorfull(givenString, givenColor) {
-        return `${givenColor}${givenString}${Color.Reset}`;
-    }
-    static colorfullBoolean(givenBoolean) {
-        const booleanString = `${givenBoolean}`;
-        if (givenBoolean) {
-            return `${this.colorfull(booleanString, Color.FgGreen)}`;
-        }
-        else {
-            return `${this.colorfull(booleanString, Color.FgRed)}`;
-        }
-    }
-    static colorfullRange(givenNumber, givenRange) {
-        const numberString = `${givenNumber}`;
-        if (Array.from(givenRange.keys()).includes(givenNumber)) {
-            return `${this.colorfull(numberString, Color.FgGreen)}`;
-        }
-        else {
-            return `${this.colorfull(numberString, Color.FgRed)}`;
         }
     }
     static toHumanReadableTime(givenTime) {
@@ -178,19 +132,19 @@ class Logger {
                 logLevelString = `[Trace]  `;
                 break;
             case LogLevel.todo:
-                logLevelString = `[${Logger.colorfull(Logger.colorfull(`TODO`, Color.BgCyan), Color.FgBlack)}]   `;
+                logLevelString = `[${Color_1.Color.black(Color_1.Color.bgCyan(`TODO`))}]   `;
                 break;
             case LogLevel.debug:
-                logLevelString = `[${Logger.colorfull(`Debug`, Color.FgYellow)}]  `;
+                logLevelString = `[${Color_1.Color.yellow(`Debug`)}]  `;
                 break;
             case LogLevel.info:
                 logLevelString = `[Info]   `;
                 break;
             case LogLevel.warn:
-                logLevelString = `[${Logger.colorfull(Logger.colorfull(`Warning`, Color.BgYellow), Color.FgBlack)}]`;
+                logLevelString = `[${Color_1.Color.black(Color_1.Color.bgYellow(`Warning`))}]`;
                 break;
             case LogLevel.error:
-                logLevelString = `[${Logger.colorfull(Logger.colorfull(`Error`, Color.BgRed), Color.FgBlack)}]  `;
+                logLevelString = `[${Color_1.Color.black(Color_1.Color.bgRed(`Error`))}]  `;
                 break;
             default:
                 logLevelString = `[WTF]    `;
@@ -200,19 +154,23 @@ class Logger {
     static getOriginName(givenOrigin) {
         let originName = ``;
         if (givenOrigin) {
+            if (typeof givenOrigin === `string`) {
+                // Passthrough string
+                return originName;
+            }
             if (givenOrigin.constructor.name === `Function`) {
                 originName += givenOrigin.name;
             }
             else {
                 originName += givenOrigin.constructor.name;
             }
-            originName += `[${Logger.colorfull(`${givenOrigin.id || `Class`}`, Color.FgCyan)}]`;
+            originName += `[${Color_1.Color.cyan(`${givenOrigin.id || `Class`}`)}]`;
         }
         return originName;
     }
     static generateTimestamp() {
         const date = new Date();
-        date.setUTCHours(date.getUTCHours() + ((date.getTimezoneOffset() / 60) * -1));
+        date.setUTCHours(date.getUTCHours() + (date.getTimezoneOffset() / 60) * -1);
         const utcTimestamp = date.toUTCString();
         const formattedTimestamp = `${utcTimestamp.slice(5, 11)}${utcTimestamp.slice(16, 25)}`;
         return formattedTimestamp;
@@ -226,13 +184,13 @@ class Logger {
         const options = Object.assign(Object.assign({}, Logger._optionsStandartValues), givenOptions);
         let message = givenMessage || options.emptyMessagePlaceholder;
         message = options.spacer + message + options.spacer;
-        const dynamicDottedLength = options.dottedLength - (Logger.getOriginName(givenOrigin)).length - message.length;
-        const leftPatternCount = Math.floor((dynamicDottedLength / 2) / (options.severalPattern ? options.dotPatternLeft.length : options.dotPattern.length));
-        const rigthPatternCount = Math.floor((dynamicDottedLength / 2) / (options.severalPattern ? options.dotPatternRight.length : options.dotPattern.length));
-        const dottedMessageLenth = (leftPatternCount * (options.severalPattern ? options.dotPatternLeft.length : options.dotPattern.length))
-            + message.length
-            + (rigthPatternCount * (options.severalPattern ? options.dotPatternRight.length : options.dotPattern.length));
-        const realLength = dottedMessageLenth + (Logger.getOriginName(givenOrigin)).length;
+        const dynamicDottedLength = options.dottedLength - Logger.getOriginName(givenOrigin).length - message.length;
+        const leftPatternCount = Math.floor(dynamicDottedLength / 2 / (options.severalPattern ? options.dotPatternLeft.length : options.dotPattern.length));
+        const rigthPatternCount = Math.floor(dynamicDottedLength / 2 / (options.severalPattern ? options.dotPatternRight.length : options.dotPattern.length));
+        const dottedMessageLenth = leftPatternCount * (options.severalPattern ? options.dotPatternLeft.length : options.dotPattern.length) +
+            message.length +
+            rigthPatternCount * (options.severalPattern ? options.dotPatternRight.length : options.dotPattern.length);
+        const realLength = dottedMessageLenth + Logger.getOriginName(givenOrigin).length;
         const offsetLength = options.dottedLength - realLength;
         let leftPattern = ``;
         let rightPattern = ``;
@@ -294,5 +252,5 @@ Logger._optionsStandartValues = {
     emptyMessagePlaceholder: `End`,
     spacer: ` `,
     silent: false,
-    sendToPort: `Console`
+    sendToPort: `Console`,
 };

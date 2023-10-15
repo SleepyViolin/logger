@@ -207,7 +207,6 @@ export class Logger {
                 break;
             case LogLevel.warn:
                 logLevelString = `[${Color.black(Color.bgYellow(`Warning`))}]`;
-
                 break;
             case LogLevel.error:
                 logLevelString = `[${Color.black(Color.bgRed(`Error`))}]  `;
@@ -221,6 +220,10 @@ export class Logger {
     private static getOriginName(givenOrigin: any): string {
         let originName = ``;
         if (givenOrigin) {
+            if (typeof givenOrigin === `string`) {
+                // Passthrough string
+                return originName;
+            }
             if (givenOrigin.constructor.name === `Function`) {
                 originName += givenOrigin.name;
             } else {
