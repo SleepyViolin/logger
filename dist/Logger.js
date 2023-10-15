@@ -177,7 +177,7 @@ class Logger {
     }
     static generateMessagePrefix(givenOrigin, givenLogLevel) {
         let messagePrefix = `${Logger.generateTimestamp()} - ${Logger.logLevelToString(givenLogLevel)} `;
-        messagePrefix += Logger.getOriginName(givenOrigin);
+        messagePrefix += `${Logger.getOriginName(givenOrigin)} ${Logger._optionsStandartValues.prefixSeperator}`;
         return messagePrefix;
     }
     static generateDottedMessage(givenMessage, givenOrigin, givenOptions) {
@@ -249,6 +249,7 @@ Logger._optionsStandartValues = {
     severalPattern: false,
     dotPatternLeft: `-->`,
     dotPatternRight: `<--`,
+    prefixSeperator: `>>`,
     emptyMessagePlaceholder: `End`,
     spacer: ` `,
     silent: false,

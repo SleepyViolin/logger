@@ -35,6 +35,7 @@ export interface LoggerOptions {
     severalPattern?: boolean;
     dotPatternLeft?: string;
     dotPatternRight?: string;
+    prefixSeperator?: string;
     emptyMessagePlaceholder?: string;
     spacer?: string;
     silent?: boolean;
@@ -63,6 +64,7 @@ export class Logger {
         severalPattern: false,
         dotPatternLeft: `-->`,
         dotPatternRight: `<--`,
+        prefixSeperator: `>>`,
         emptyMessagePlaceholder: `End`,
         spacer: ` `,
         silent: false,
@@ -244,7 +246,7 @@ export class Logger {
 
     private static generateMessagePrefix(givenOrigin: any, givenLogLevel: LogLevel): string {
         let messagePrefix = `${Logger.generateTimestamp()} - ${Logger.logLevelToString(givenLogLevel)} `;
-        messagePrefix += Logger.getOriginName(givenOrigin);
+        messagePrefix += `${Logger.getOriginName(givenOrigin)} ${Logger._optionsStandartValues.prefixSeperator}`;
         return messagePrefix;
     }
 

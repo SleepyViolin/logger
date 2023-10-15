@@ -29,6 +29,7 @@ export interface LoggerOptions {
     severalPattern?: boolean;
     dotPatternLeft?: string;
     dotPatternRight?: string;
+    prefixSeperator?: string;
     emptyMessagePlaceholder?: string;
     spacer?: string;
     silent?: boolean;
