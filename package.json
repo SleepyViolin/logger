@@ -21,11 +21,10 @@
     "author": "Raphael Lauterbach",
     "license": "Apache-2.0",
     "devDependencies": {
-        "@types/node-red": "^1.2.1",
+        "@types/node-red": "^1.3.2",
         "tslint": "^6.1.3",
-        "typescript": "^4.8.3"
+        "typescript": "^4.9.5"
     },
-    "dependencies": {},
     "repository": {
         "type": "git",
         "url": "git+https://github.com/SleepyViolin/logger.git"

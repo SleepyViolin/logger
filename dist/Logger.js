@@ -156,7 +156,7 @@ class Logger {
         if (givenOrigin) {
             if (typeof givenOrigin === `string`) {
                 // Passthrough string
-                return originName;
+                return givenOrigin;
             }
             if (givenOrigin.constructor.name === `Function`) {
                 originName += givenOrigin.name;
