@@ -47,8 +47,11 @@ export enum ColorCode {
 // ++++++++++++++++++++++++++++++ Class ++++++++++++++++++++++++++++++
 
 export class Color {
-    public static bright(givenString: string): string {
+    public static reset(givenString: string): string {
         return Color.colorfull(ColorCode.Reset, givenString);
+    }
+    public static bright(givenString: string): string {
+        return Color.colorfull(ColorCode.Bright, givenString);
     }
     public static dim(givenString: string): string {
         return Color.colorfull(ColorCode.Dim, givenString);
