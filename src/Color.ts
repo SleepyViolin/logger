@@ -48,22 +48,22 @@ export enum ColorCode {
 
 export class Color {
     public static bright(givenString: string): string {
-        return Color.colorfull(ColorCode.FgBlack, givenString);
+        return Color.colorfull(ColorCode.Reset, givenString);
     }
     public static dim(givenString: string): string {
-        return Color.colorfull(ColorCode.FgRed, givenString);
+        return Color.colorfull(ColorCode.Dim, givenString);
     }
     public static underscore(givenString: string): string {
-        return Color.colorfull(ColorCode.FgGreen, givenString);
+        return Color.colorfull(ColorCode.Underscore, givenString);
     }
     public static blink(givenString: string): string {
-        return Color.colorfull(ColorCode.FgYellow, givenString);
+        return Color.colorfull(ColorCode.Blink, givenString);
     }
     public static reverse(givenString: string): string {
-        return Color.colorfull(ColorCode.FgBlue, givenString);
+        return Color.colorfull(ColorCode.Reverse, givenString);
     }
     public static hidden(givenString: string): string {
-        return Color.colorfull(ColorCode.FgMagenta, givenString);
+        return Color.colorfull(ColorCode.Hidden, givenString);
     }
 
     public static black(givenString: string): string {

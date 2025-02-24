@@ -1,6 +1,6 @@
 {
     "name": "@sleepyviolin/logger",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "description": "A simple little logger in TypeScript.",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
