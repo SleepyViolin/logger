@@ -240,7 +240,8 @@ export class Logger {
         const date = new Date();
         date.setUTCHours(date.getUTCHours() + (date.getTimezoneOffset() / 60) * -1);
         const utcTimestamp = date.toUTCString();
-        const formattedTimestamp = `${utcTimestamp.slice(5, 11)}${utcTimestamp.slice(16, 25)}`;
+        let formattedTimestamp = `${utcTimestamp.slice(5, 11)}${utcTimestamp.slice(16, 25)}`;
+        formattedTimestamp = formattedTimestamp.replace(/^0+/, ""); // remove leading zeros
         return formattedTimestamp;
     }
 
