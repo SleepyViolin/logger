@@ -196,7 +196,7 @@ export class Logger {
         let logLevelString: string;
         switch (givenLogLevel) {
             case LogLevel.trace:
-                logLevelString = `[Trace]  `;
+                logLevelString = `[${Color.dim(`Trace`)}]  `;
                 break;
             case LogLevel.todo:
                 logLevelString = `[${Color.black(Color.bgCyan(`TODO`))}]   `;
