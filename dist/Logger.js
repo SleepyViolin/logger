@@ -30,6 +30,28 @@ var LogLevel;
 // ++++++++++++++++++++++++++++++ Class ++++++++++++++++++++++++++++++
 class Logger {
     // ************************************************************************
+    // *** Propertys ***
+    // *** Public ***
+    // *** Private ***
+    static _logLevel = LogLevel.trace;
+    static _isSilent = false;
+    static _silentLogs = [];
+    static _timeMeasurements = new Map();
+    static _ports = new Map();
+    static _optionsStandartValues = {
+        dotted: false,
+        dottedLength: 110,
+        dotPattern: `-`,
+        severalPattern: false,
+        dotPatternLeft: `-->`,
+        dotPatternRight: `<--`,
+        prefixSeperator: `>>`,
+        emptyMessagePlaceholder: `End`,
+        spacer: ` `,
+        silent: false,
+        sendToPort: `Console`,
+    };
+    // ************************************************************************
     // *** Getter / Setter ***
     // ************************************************************************
     // *** Constructor and Initializer ***
@@ -129,7 +151,7 @@ class Logger {
         let logLevelString;
         switch (givenLogLevel) {
             case LogLevel.trace:
-                logLevelString = `[Trace]  `;
+                logLevelString = `[${Color_1.Color.dim(`Trace`)}]  `;
                 break;
             case LogLevel.todo:
                 logLevelString = `[${Color_1.Color.black(Color_1.Color.bgCyan(`TODO`))}]   `;
@@ -172,7 +194,8 @@ class Logger {
         const date = new Date();
         date.setUTCHours(date.getUTCHours() + (date.getTimezoneOffset() / 60) * -1);
         const utcTimestamp = date.toUTCString();
-        const formattedTimestamp = `${utcTimestamp.slice(5, 11)}${utcTimestamp.slice(16, 25)}`;
+        let formattedTimestamp = `${utcTimestamp.slice(5, 11)}${utcTimestamp.slice(16, 25)}`;
+        formattedTimestamp = formattedTimestamp.replace(/^0+/, ""); // remove leading zeros
         return formattedTimestamp;
     }
     static generateMessagePrefix(givenOrigin, givenLogLevel) {
@@ -233,25 +256,3 @@ class Logger {
     }
 }
 exports.Logger = Logger;
-// ************************************************************************
-// *** Propertys ***
-// *** Public ***
-// *** Private ***
-Logger._logLevel = LogLevel.trace;
-Logger._isSilent = false;
-Logger._silentLogs = [];
-Logger._timeMeasurements = new Map();
-Logger._ports = new Map();
-Logger._optionsStandartValues = {
-    dotted: false,
-    dottedLength: 110,
-    dotPattern: `-`,
-    severalPattern: false,
-    dotPatternLeft: `-->`,
-    dotPatternRight: `<--`,
-    prefixSeperator: `>>`,
-    emptyMessagePlaceholder: `End`,
-    spacer: ` `,
-    silent: false,
-    sendToPort: `Console`,
-};
