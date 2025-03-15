@@ -195,7 +195,7 @@ class Logger {
         date.setUTCHours(date.getUTCHours() + (date.getTimezoneOffset() / 60) * -1);
         const utcTimestamp = date.toUTCString();
         let formattedTimestamp = `${utcTimestamp.slice(5, 11)}${utcTimestamp.slice(16, 25)}`;
-        formattedTimestamp = formattedTimestamp.replace(/^0+/, ""); // remove leading zeros
+        formattedTimestamp = formattedTimestamp.replace(/^0+/, ``); // remove leading zeros
         return formattedTimestamp;
     }
     static generateMessagePrefix(givenOrigin, givenLogLevel) {
